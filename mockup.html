@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Block Fusion AI - Mockup</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { 
+      width: 100%; 
+      height: 100%; 
+      background: #1a1a2e; 
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    .mockup-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .game-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    .score-container {
+      color: white;
+      text-align: left;
+    }
+    .score {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .high-score {
+      font-size: 16px;
+      color: #aaaaaa;
+    }
+    .buttons-container {
+      display: flex;
+    }
+    .header-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .pause-button {
+      background-color: #ff6b9d;
+    }
+    .shop-button {
+      background-color: #ffbe0b;
+    }
+    .sound-button {
+      background-color: #8338ec;
+    }
+    .theme-button {
+      background-color: #4ecdc4;
+    }
+    
+    .game-grid {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background-color: #16213e;
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      gap: 2px;
+      padding: 4px;
+    }
+    .grid-cell {
+      background-color: #1a1a3e;
+      border-radius: 4px;
+    }
+    .filled-cell {
+      background-color: #ff6b9d;
+      border-radius: 4px;
+    }
+    .highlight-cell {
+      background-color: rgba(255, 107, 157, 0.3);
+      border-radius: 4px;
+    }
+    
+    .blocks-area {
+      position: absolute;
+      bottom: 80px;
+      left: 0;
+      width: 100%;
+      height: 120px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+    .block-preview {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      cursor: pointer;
+    }
+    .block-cell {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-color: #ff6b9d;
+      border-radius: 4px;
+    }
+    
+    .hint-button {
+      position: absolute;
+      right: 30px;
+      bottom: 200px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #ffbe0b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .hint-counter {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #4ecdc4;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .level-indicator {
+      position: absolute;
+      top: 25px;
+      right: 200px;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      display: none;
+    }
+    .popup {
+      background-color: #1a1a2e;
+      border-radius: 20px;
+      padding: 30px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    .popup-title {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .popup-button {
+      background-color: #ff6b9d;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    
+    .back-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: 2px solid #ff6b9d;
+      color: #ff6b9d;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 101;
+    }
+    .back-button:hover {
+      background-color: #ff6b9d33;
+    }
+  </style>
+</head>
+<body>
+  <div class="mockup-container">
+    <div class="game-header">
+      <div class="score-container">
+        <div class="score">Score: 270</div>
+        <div class="high-score">Best: 1240</div>
+      </div>
+      
+      <div class="level-indicator">Level: 2</div>
+      
+      <div class="buttons-container">
+        <div class="header-button theme-button">🎨</div>
+        <div class="header-button sound-button">🔊</div>
+        <div class="header-button shop-button">$</div>
+        <div class="header-button pause-button">II</div>
+      </div>
+    </div>
+    
+    <div class="game-grid" id="gameGrid">
+      <!-- Grid cells will be generated by JavaScript -->
+    </div>
+    
+    <div class="blocks-area">
+      <!-- Block 1 -->
+      <div class="block-preview" id="block1">
+        <div class="block-cell" style="top: 35px; left: 5px;"></div>
+        <div class="block-cell" style="top: 35px; left: 35px;"></div>
+        <div class="block-cell" style="top: 35px; left: 65px;"></div>
+      </div>
+      
+      <!-- Block 2 -->
+      <div class="block-preview" id="block2">
+        <div class="block-cell" style="top: 20px; left: 35px;"></div>
+        <div class="block-cell" style="top: 50px; left: 35px;"></div>
+        <div class="block-cell" style="top: 50px; left: 65px;"></div>
+      </div>
+      
+      <!-- Block 3 -->
+      <div class="block-preview" id="block3">
+        <div class="block-cell" style="top: 20px; left: 35px;"></div>
+        <div class="block-cell" style="top: 50px; left: 5px;"></div>
+        <div class="block-cell" style="top: 50px; left: 35px;"></div>
+        <div class="block-cell" style="top: 50px; left: 65px;"></div>
+      </div>
+    </div>
+    
+    <div class="hint-button">
+      ?
+      <div class="hint-counter">5</div>
+    </div>
+    
+    <!-- Pause overlay -->
+    <div class="overlay" id="pauseOverlay">
+      <div class="popup">
+        <div class="popup-title">PAUSED</div>
+        <button class="popup-button" onclick="togglePause()">Resume</button>
+        <button class="popup-button">Restart</button>
+        <button class="popup-button" onclick="goBack()">Exit</button>
+      </div>
+    </div>
+  </div>
+  
+  <button class="back-button" onclick="goBack()">Back to Demo</button>
+  
+  <script>
+    // Generate grid cells
+    const gameGrid = document.getElementById('gameGrid');
+    for (let i = 0; i < 100; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      gameGrid.appendChild(cell);
+    }
+    
+    // Add some filled cells to demonstrate gameplay
+    const filledPositions = [
+      14, 15, 16, 24, 25, 26, 34, 35, 36,  // Block in center
+      72, 73, 82, 83,                      // Block in bottom-left
+      77, 78, 87, 88,                      // Block in bottom-right
+      50, 51, 52, 53                       // Horizontal line almost complete
+    ];
+    
+    // Fill cells after a short delay
+    setTimeout(() => {
+      const cells = gameGrid.children;
+      filledPositions.forEach(pos => {
+        cells[pos].className = 'filled-cell';
+      });
+    }, 500);
+    
+    // Make pause button functional
+    document.querySelector('.pause-button').addEventListener('click', togglePause);
+    
+    function togglePause() {
+      const overlay = document.getElementById('pauseOverlay');
+      if (overlay.style.display === 'flex') {
+        overlay.style.display = 'none';
+      } else {
+        overlay.style.display = 'flex';
+      }
+    }
+    
+    function goBack() {
+      window.location.href = './';
+    }
+    
+    // Make blocks draggable for demo interaction
+    let activeBlock = null;
+    let activeBlockId = null;
+    const blocks = document.querySelectorAll('.block-preview');
+    
+    blocks.forEach(block => {
+      block.addEventListener('mousedown', function(event) {
+        // Store which block is being dragged
+        activeBlockId = this.id;
+        
+        // Create visual clone for dragging
+        activeBlock = this.cloneNode(true);
+        activeBlock.style.position = 'absolute';
+        activeBlock.style.zIndex = 1000;
+        activeBlock.style.opacity = 0.8;
+        document.body.appendChild(activeBlock);
+        
+        // Set initial position
+        moveBlock(event);
+        
+        // Prevent default to avoid issues
+        event.preventDefault();
+      });
+      
+      // Also handle touch events for mobile
+      block.addEventListener('touchstart', function(event) {
+        // Store which block is being dragged
+        activeBlockId = this.id;
+        
+        // Create visual clone for dragging
+        activeBlock = this.cloneNode(true);
+        activeBlock.style.position = 'absolute';
+        activeBlock.style.zIndex = 1000;
+        activeBlock.style.opacity = 0.8;
+        document.body.appendChild(activeBlock);
+        
+        // Set initial position
+        const touch = event.touches[0];
+        moveBlockTouch(touch);
+        
+        // Prevent default to avoid issues
+        event.preventDefault();
+      });
+    });
+    
+    document.addEventListener('mousemove', function(event) {
+      if (activeBlock) {
+        moveBlock(event);
+        highlightGridPosition(event.clientX, event.clientY);
+      }
+    });
+    
+    document.addEventListener('touchmove', function(event) {
+      if (activeBlock) {
+        const touch = event.touches[0];
+        moveBlockTouch(touch);
+        highlightGridPosition(touch.clientX, touch.clientY);
+        event.preventDefault();
+      }
+    });
+    
+    document.addEventListener('mouseup', function(event) {
+      if (activeBlock) {
+        // Try to place the block
+        placeBlockAtPosition(event.clientX, event.clientY);
+        
+        // Clean up
+        document.body.removeChild(activeBlock);
+        activeBlock = null;
+        activeBlockId = null;
+        
+        // Remove any highlights
+        removeGridHighlights();
+      }
+    });
+    
+    document.addEventListener('touchend', function(event) {
+      if (activeBlock) {
+        // Get the last touch position
+        const lastTouch = event.changedTouches[0];
+        
+        // Try to place the block
+        placeBlockAtPosition(lastTouch.clientX, lastTouch.clientY);
+        
+        // Clean up
+        document.body.removeChild(activeBlock);
+        activeBlock = null;
+        activeBlockId = null;
+        
+        // Remove any highlights
+        removeGridHighlights();
+        
+        event.preventDefault();
+      }
+    });
+    
+    function moveBlock(event) {
+      if (!activeBlock) return;
+      
+      const x = event.clientX - 50;
+      const y = event.clientY - 50;
+      
+      activeBlock.style.left = x + 'px';
+      activeBlock.style.top = y + 'px';
+    }
+    
+    function moveBlockTouch(touch) {
+      if (!activeBlock) return;
+      
+      const x = touch.clientX - 50;
+      const y = touch.clientY - 50;
+      
+      activeBlock.style.left = x + 'px';
+      activeBlock.style.top = y + 'px';
+    }
+    
+    function highlightGridPosition(clientX, clientY) {
+      // Remove any existing highlights
+      removeGridHighlights();
+      
+      // Check if position is over the grid
+      const gridRect = gameGrid.getBoundingClientRect();
+      
+      if (
+        clientX >= gridRect.left &&
+        clientX <= gridRect.right &&
+        clientY >= gridRect.top &&
+        clientY <= gridRect.bottom
+      ) {
+        // Calculate which cell we're over
+        const relativeX = clientX - gridRect.left;
+        const relativeY = clientY - gridRect.top;
+        
+        const cellWidth = gridRect.width / 10;
+        const cellHeight = gridRect.height / 10;
+        
+        const cellX = Math.floor(relativeX / cellWidth);
+        const cellY = Math.floor(relativeY / cellHeight);
+        
+        // Highlight the cell
+        const cellIndex = cellY * 10 + cellX;
+        if (cellIndex >= 0 && cellIndex < 100) {
+          const cell = gameGrid.children[cellIndex];
+          cell.classList.add('highlight-cell');
+        }
+      }
+    }
+    
+    function removeGridHighlights() {
+      // Remove highlight class from all cells
+      const cells = gameGrid.children;
+      for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove('highlight-cell');
+      }
+    }
+    
+    function placeBlockAtPosition(clientX, clientY) {
+      // Check if position is over the grid
+      const gridRect = gameGrid.getBoundingClientRect();
+      
+      if (
+        clientX >= gridRect.left &&
+        clientX <= gridRect.right &&
+        clientY >= gridRect.top &&
+        clientY <= gridRect.bottom
+      ) {
+        // Calculate which cell we're over
+        const relativeX = clientX - gridRect.left;
+        const relativeY = clientY - gridRect.top;
+        
+        const cellWidth = gridRect.width / 10;
+        const cellHeight = gridRect.height / 10;
+        
+        const cellX = Math.floor(relativeX / cellWidth);
+        const cellY = Math.floor(relativeY / cellHeight);
+        
+        // Generate block pattern based on which block was dragged
+        let pattern = [];
+        
+        switch (activeBlockId) {
+          case 'block1': // Horizontal line
+            pattern = [0, 1, 2]; // Relative positions
+            break;
+          case 'block2': // L shape
+            pattern = [0, 10, 11]; // Vertical + right
+            break;
+          case 'block3': // T shape
+            pattern = [0, 10, 11, 12]; // Top + horizontal line
+            break;
+        }
+        
+        // Apply the pattern to the grid
+        for (const offset of pattern) {
+          const row = Math.floor(offset / 10);
+          const col = offset % 10;
+          
+          const targetRow = cellY + row;
+          const targetCol = cellX + col;
+          
+          // Make sure we're in bounds
+          if (targetRow >= 0 && targetRow < 10 && targetCol >= 0 && targetCol < 10) {
+            const cellIndex = targetRow * 10 + targetCol;
+            const cell = gameGrid.children[cellIndex];
+            
+            // Only place if the cell is empty
+            if (!cell.classList.contains('filled-cell')) {
+              cell.className = 'filled-cell';
+            }
+          }
+        }
+        
+        // Simulate score increase
+        const scoreElement = document.querySelector('.score');
+        const currentScore = parseInt(scoreElement.textContent.replace('Score: ', ''));
+        scoreElement.textContent = `Score: ${currentScore + 10 * pattern.length}`;
+      }
+    }
+  </script>
+</body>
+</html>

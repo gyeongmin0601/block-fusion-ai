@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Block Fusion AI - TypeScript Version</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { 
+      width: 100%; 
+      height: 100%; 
+      background: #1a1a2e; 
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    #app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    #loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #1a1a2e;
+      z-index: 100;
+      transition: opacity 0.5s ease;
+    }
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 20px;
+      border: 5px solid rgba(255, 107, 157, 0.3);
+      border-radius: 50%;
+      border-top-color: #ff6b9d;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      color: white;
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .control-button {
+      background: rgba(255, 107, 157, 0.7);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .control-button:hover {
+      background: rgba(255, 107, 157, 1);
+    }
+    .control-label {
+      color: white;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 26px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #ff6b9d;
+    }
+    input:checked + .slider:before {
+      transform: translateX(32px);
+    }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 50;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+  <script type="module" crossorigin src="/block-fusion-ai/assets/ts-game-c056a59b.js"></script>
+  <link rel="modulepreload" crossorigin href="/block-fusion-ai/assets/vendor-aecdb691.js">
+</head>
+<body>
+  <div id="app">
+    <div id="game-container"></div>
+    
+    <div id="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading Game...</div>
+    </div>
+    
+    <!-- back button removed -->
+    
+    <div id="controls">
+      <div class="control-group">
+        <div class="control-label">UI Mode</div>
+        <label class="switch">
+          <input type="checkbox" id="uiToggle" checked>
+          <span class="slider"></span>
+        </label>
+        <div id="uiModeText" style="color: white; font-size: 12px; margin-top: 5px;">Enhanced UI</div>
+      </div>
+      
+      <div class="control-group">
+        <div class="control-label">Effects</div>
+        <label class="switch">
+          <input type="checkbox" id="effectsToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <button class="control-button" id="restartButton">Restart Game</button>
+    </div>
+  </div>
+  
+  <!-- Game logic -->
+  
+  
+  <script>
+    // Show debug controls only with ?debug=true
+    if (new URLSearchParams(window.location.search).get('debug') === 'true') {
+      document.getElementById('controls').style.display = 'flex';
+    }
+
+    // Handle loading state
+    window.addEventListener('load', function() {
+      const loading = document.getElementById('loading');
+      
+      // Check for game ready state or timeout after 10 seconds
+      const checkReady = setInterval(function() {
+        if (window.gameReady === true || window.gameTimedOut === true) {
+          loading.classList.add('hidden');
+          clearInterval(checkReady);
+        }
+      }, 500);
+      
+      // Timeout fallback
+      setTimeout(function() {
+        window.gameTimedOut = true;
+      }, 10000);
+      
+      // UI toggle
+      const uiToggle = document.getElementById('uiToggle');
+      const uiModeText = document.getElementById('uiModeText');
+      
+      uiToggle.addEventListener('change', function() {
+        const isEnhanced = this.checked;
+        uiModeText.textContent = isEnhanced ? 'Enhanced UI' : 'Legacy UI';
+        
+        if (window.gameInitializer) {
+          window.gameInitializer.updateConfig({
+            useEnhancedUI: isEnhanced
+          });
+        }
+      });
+      
+      // Effects toggle
+      const effectsToggle = document.getElementById('effectsToggle');
+      
+      effectsToggle.addEventListener('change', function() {
+        const effectsEnabled = this.checked;
+        
+        if (window.gameInitializer) {
+          window.gameInitializer.updateConfig({
+            enableEffects: effectsEnabled
+          });
+        }
+      });
+      
+      // Restart button
+      const restartButton = document.getElementById('restartButton');
+      
+      restartButton.addEventListener('click', function() {
+        if (window.game && window.game.scene) {
+          const activeScene = window.gameInitializer.getConfig().useEnhancedUI ? 
+            'EnhancedGameScene' : 'GameScene';
+            
+          // Restart the active game scene
+          window.game.scene.getScene(activeScene).scene.restart();
+          
+          // Also restart UI scene if it exists
+          const uiScene = window.gameInitializer.getConfig().useEnhancedUI ? 
+            'EnhancedUIScene' : 'UIScene';
+            
+          if (window.game.scene.isActive(uiScene)) {
+            window.game.scene.getScene(uiScene).scene.restart();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
