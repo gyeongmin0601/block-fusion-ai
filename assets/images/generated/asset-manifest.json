@@ -1,0 +1,140 @@
+{
+  "generated_at": "2026-03-02T05:34:30.503Z",
+  "duration_ms": 212794,
+  "totalCost": 0.56,
+  "assets": [
+    {
+      "name": "block-coral",
+      "filename": "block-coral.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-coral.png",
+      "size": 957758,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:31:16.821Z"
+    },
+    {
+      "name": "block-amber",
+      "filename": "block-amber.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-amber.png",
+      "size": 1106672,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:31:33.714Z"
+    },
+    {
+      "name": "block-teal",
+      "filename": "block-teal.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-teal.png",
+      "size": 1194607,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:31:50.170Z"
+    },
+    {
+      "name": "block-sage",
+      "filename": "block-sage.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-sage.png",
+      "size": 1528921,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:32:07.033Z"
+    },
+    {
+      "name": "block-sand",
+      "filename": "block-sand.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-sand.png",
+      "size": 1016515,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:32:24.341Z"
+    },
+    {
+      "name": "block-slate",
+      "filename": "block-slate.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-slate.png",
+      "size": 1567240,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:32:40.365Z"
+    },
+    {
+      "name": "block-plum",
+      "filename": "block-plum.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-plum.png",
+      "size": 1066709,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:32:57.689Z"
+    },
+    {
+      "name": "block-rust",
+      "filename": "block-rust.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-rust.png",
+      "size": 1471193,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:33:15.633Z"
+    },
+    {
+      "name": "block-terracotta",
+      "filename": "block-terracotta.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/block-terracotta.png",
+      "size": 1023956,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:33:31.108Z"
+    },
+    {
+      "name": "background",
+      "filename": "background.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/background.png",
+      "size": 1782047,
+      "api": "openai",
+      "method": "primary",
+      "fallback": false,
+      "timestamp": "2026-03-02T05:33:52.940Z"
+    },
+    {
+      "name": "btn-primary",
+      "filename": "btn-primary.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/btn-primary.png",
+      "size": 913776,
+      "api": "stability",
+      "method": "primary",
+      "fallback": false,
+      "timestamp": "2026-03-02T05:34:02.977Z"
+    },
+    {
+      "name": "panel-bg",
+      "filename": "panel-bg.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/panel-bg.png",
+      "size": 1328426,
+      "api": "stability",
+      "method": "primary",
+      "fallback": false,
+      "timestamp": "2026-03-02T05:34:12.422Z"
+    },
+    {
+      "name": "particle-gold",
+      "filename": "particle-gold.png",
+      "path": "../../../game-hq/block-blast/app/public/assets/images/generated/particle-gold.png",
+      "size": 1164888,
+      "api": "stability",
+      "method": "fallback",
+      "fallback": true,
+      "timestamp": "2026-03-02T05:34:30.502Z"
+    }
+  ],
+  "outputDir": "../../../game-hq/block-blast/app/public/assets/images/generated",
+  "fallbacksUsed": 10,
+  "failedAssets": 0
+}
